@@ -5,7 +5,7 @@ import { Mesh } from "three";
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 
 export function Model() {
-    const gltf = useGLTF('/models/Dinosaur.glb') as unknown as GLTF;
+    const gltf = useGLTF(`${process.env.PUBLIC_URL}/models/Dinosaur.glb`) as unknown as GLTF;
     const ref = useRef<Mesh>(null);
 
     useFrame(() => {
