@@ -20,9 +20,9 @@ function App() {
           <NavLink className='m-2 p-2 font-montserrat text-base' style={({isActive}) => ({color: isActive ? '#529fa9' : '#696969'})} to={'/products'}>Produits</NavLink>
           <NavLink className='m-2 p-2 font-montserrat text-base' style={({isActive}) => ({color: isActive ? '#529fa9' : '#696969'})} to={'/contact'}>Nous contacter</NavLink>
 
-          <div className='flex items-center m-2 h-10 border rounded-md overflow-hidden'>
-            <CiSearch className='w-12 text-2xl'/>
-            <input type="text" className='w-56 outline-none font-montserrat text-sm' placeholder='Rechercher un modèle'/>
+          <div className='relative flex items-center m-2 h-10'>
+            <CiSearch className='absolute w-10 text-2xl'/>
+            <input type="text" className='pl-10 w-72 h-full font-montserrat text-sm focus:outline outline-offset-2 outline-1 border rounded-md' placeholder='Rechercher un modèle'/>
           </div>
         </nav>
       </header>

@@ -9,31 +9,43 @@ import { IoIosStar } from "react-icons/io";
 export const Footer = () => {
   return (
     <main>
-        <section className="flex py-20 bg-[#404040]">
+        <section className="flex py-20 bg-[#404040] border-b">
             <div className='flex justify-evenly w-full'>
                 <div className="flex flex-col w-1/5 h-full p-8">
                     <h1 className="mb-4 w-full text-white uppercase font-bold">Infos importantes</h1>
-                    <Link to="/figurinum" className='mb-2 text-white'>Accueil</Link>
-                    <Link to="/Refund" className='text-white'>Demander remboursement</Link>
+                    <div className='mb-2'>
+                        <Link to="/figurinum" className='text-white'>Accueil</Link>
+                    </div>
+                    <div>
+                        <Link to="/Refund" className='text-white'>Demander remboursement</Link>
+                    </div>
                 </div>
 
                 <div className="flex flex-col w-1/5 h-full p-8">
                     <h1 className="mb-4 w-full text-white uppercase font-bold">À propos</h1>
-                    <Link to="/About" className='mb-2 text-white'>Figurinum</Link>
-                    <Link to="/Conditions" className='mb-2 text-white'>Conditions Générales de Vente</Link>
-                    <Link to="/Terms" className='text-white'>Mentions légales</Link>
+                    <div className='mb-2'>
+                        <Link to="/About" className='text-white'>Figurinum</Link>
+                    </div>
+                    <div className='mb-2'>
+                        <Link to="/Conditions" className='text-white'>Conditions Générales de Vente</Link>
+                    </div>
+                    <div className='mb-2'>
+                        <Link to="/Terms" className='text-white'>Mentions légales</Link>
+                    </div>
                 </div>
 
                 <div className="flex flex-col w-1/5 h-full p-8">
                     <h1 className="mb-4 w-full text-white uppercase font-bold">Contact</h1>
-                    <Link to="/Contact" className='text-white mb-2'>Nous contacter</Link>
+                    <div className='mb-2'>
+                        <Link to="/Contact" className='text-white'>Nous contacter</Link>
+                    </div>
                     <p className='text-white'>figurinum@contact.fr</p>
                 </div>
 
                 <div className="flex flex-col w-1/5 h-full p-8">
                     <h1 className="mb-4 w-full text-white uppercase font-bold">Newsletter</h1>
                     <p className='mb-2 text-white'>Ne manquez les nouveautés</p>
-                    <input type="text" className='p-2 outline-none text-white font-montserrat text-sm border rounded-md bg-transparent' placeholder='Saisissez votre Email'/>
+                    <input type="text" className='p-2 text-white font-montserrat text-sm bg-transparent focus:outline outline-offset-2 outline-1 outline-white border rounded-md placeholder-white' placeholder='Saisissez votre Email'/>
                 </div>
             </div>
         </section>

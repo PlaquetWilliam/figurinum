@@ -41,7 +41,7 @@ export const Contact = () => {
 
   return (
     <main>
-        <section className="flex flex-col items-center py-20">
+        <section className="flex flex-col items-center py-40">
             <h1 className="mb-6 text-7xl font-montserrat uppercase">Contacter-nous</h1>
             <p className="text-2xl font-montserrat">Nous sommes disponibles 7 jours sur 7.</p>
         </section>
@@ -65,13 +65,13 @@ export const Contact = () => {
             <div className="w-1/2">
                 {faqData.map((faq, index) => (
                     <div key={index} className="mb-4">
-                        <button className="w-full text-left py-4 px-6 bg-gray-200 hover:bg-gray-300 focus:outline-none transition-colors duration-300 flex justify-between items-center" onClick={() => toggleAnswer(index)}>
+                        <button className="w-full text-left py-4 px-6 bg-[#E0E0E0] hover:bg-[#D5D5D5] focus:outline-none transition-colors duration-300 flex justify-between items-center" onClick={() => toggleAnswer(index)}>
                             <span className="text-xl font-montserrat">{faq.question}</span>
-                            <FiChevronDown className={`transition-transform duration-300 ${ openIndex === index ? "transform rotate-180" : "" }`}/>
+                            <FiChevronDown className={`text-2xl transition-transform duration-300 ${ openIndex === index ? "transform rotate-180" : "" }`}/>
                         </button>
 
                         <div className={`overflow-hidden transition-all duration-500 ease-in-out ${ openIndex === index ? "max-h-96" : "max-h-0" }`} style={{ maxHeight: openIndex === index ? `${faq.answer.length * 1.5}px` : "0px", }}>
-                            <p className="p-6 font-montserrat bg-gray-100">{faq.answer}</p>
+                            <p className="p-6 font-montserrat bg-[#E9E9E9]">{faq.answer}</p>
                         </div>
                     </div>
                 ))}

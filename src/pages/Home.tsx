@@ -5,6 +5,7 @@ import { Model } from "../components/Cube";
 import { Footer } from "../components/Footer"
 
 import Presentation from '../img/Presentation.png';
+import Test from '../img/Test.png';
 
 export const Home = () => {
     return (
@@ -46,19 +47,61 @@ export const Home = () => {
                 </div>
             </section>
 
-            <section className='flex justify-evenly items-center w-full h-[90vh] bg-white'>
-                <div className="flex justify-center items-center w-5/12">
-                    <img src={ Presentation } className='z-10 w-11/12'/>
+            <section className='flex flex-col w-full py-40 bg-white'>
+                <div className='flex justify-center items-center w-full'>
+                    <h1 className='mb-4 text-7xl font-montserrat'>Nouveautés</h1>
                 </div>
 
-                <div className='flex flex-col justify-center w-5/12'>
-                    <h1 className='mb-4 text-7xl font-montserrat'>L’Art de la Figurine Personnalisée</h1>
-                    <p className='font-montserrat'>
-                        Bienvenue dans l'univers des figurines d'exception ! Que vous soyez collectionneur passionné ou 
-                        amateur de pièces uniques, découvrez notre large sélection de figurines détaillées et de haute qualité. 
-                        De vos personnages préférés aux éditions limitées, plongez dans un monde où chaque figurine raconte une 
-                        histoire. Parcourez notre collection et donnez vie à votre passion dès aujourd'hui !
-                    </p>
+                <div className="flex justify-center items-center mt-8 w-full h-full">
+                    <div className="flex justify-around w-3/4">
+                        <div className='flex flex-col p-8 border rounded-2xl shadow-2xl duration-300 ease-out hover:border-[#529fa9] hover:scale-105 cursor-pointer'>
+                            <div className='flex w-full overflow-hidden rounded-2xl'>
+                                <img src={ Test } className='w-full' />
+                            </div>
+
+                            <div className='flex justify-between mt-4 w-full'>
+                                <div className='flex'>
+                                    <p className='font-montserrat'>Nouveau dino</p>
+                                </div>
+
+                                <div className='flex'>
+                                    <p className='font-montserrat'>50€</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className='flex flex-col mx-12 p-8 border rounded-2xl shadow-2xl duration-300 ease-out hover:border-[#529fa9] hover:scale-105 cursor-pointer'>
+                            <div className='flex w-full overflow-hidden rounded-2xl'>
+                                <img src={ Test } className='w-full' />
+                            </div>
+
+                            <div className='flex justify-between mt-4 w-full'>
+                                <div className='flex'>
+                                    <p className='font-montserrat'>Nouveau dino</p>
+                                </div>
+
+                                <div className='flex'>
+                                    <p className='font-montserrat'>95€</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className='flex flex-col p-8 border rounded-2xl shadow-2xl duration-300 ease-out hover:border-[#529fa9] hover:scale-105 cursor-pointer'>
+                            <div className='flex w-full overflow-hidden rounded-2xl'>
+                                <img src={ Test } className='w-full' />
+                            </div>
+
+                            <div className='flex justify-between mt-4 w-full'>
+                                <div className='flex'>
+                                    <p className='font-montserrat'>Nouveau robot</p>
+                                </div>
+
+                                <div className='flex'>
+                                    <p className='font-montserrat'>120€</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 

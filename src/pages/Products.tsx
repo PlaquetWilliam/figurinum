@@ -138,7 +138,7 @@ export const Products = () => {
                 </div>
             </div>
 
-                <div className="grid gap-8 gap-y-16 grid-cols-4 p-8 w-full h-full">
+                <div className="grid gap-8 gap-y-16 grid-cols-4 p-8 w-full h-full my-8">
                     {filteredProducts.map((product) => (
                         <div key={product.id} className='flex flex-col p-8 border rounded-2xl shadow-2xl duration-300 ease-out hover:border-[#529fa9] hover:scale-105 cursor-pointer'>
                             <div className='flex w-full overflow-hidden rounded-2xl'>
