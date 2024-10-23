@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/figurinum/static/css/main.94fd6d7b.css",
-    "main.js": "/figurinum/static/js/main.bdc84b79.js",
+    "main.css": "/figurinum/static/css/main.6afb4d4f.css",
+    "main.js": "/figurinum/static/js/main.f86d0d33.js",
     "static/js/453.a6a97343.chunk.js": "/figurinum/static/js/453.a6a97343.chunk.js",
     "static/media/Test.png": "/figurinum/static/media/Test.35596c6da11eabd9bb80.png",
     "static/media/Presentation.png": "/figurinum/static/media/Presentation.02cfb079e56590dd9704.png",
     "static/media/Logo.png": "/figurinum/static/media/Logo.d53272ff4d40eb3d2a85.png",
     "index.html": "/figurinum/index.html",
-    "main.94fd6d7b.css.map": "/figurinum/static/css/main.94fd6d7b.css.map",
-    "main.bdc84b79.js.map": "/figurinum/static/js/main.bdc84b79.js.map",
+    "main.6afb4d4f.css.map": "/figurinum/static/css/main.6afb4d4f.css.map",
+    "main.f86d0d33.js.map": "/figurinum/static/js/main.f86d0d33.js.map",
     "453.a6a97343.chunk.js.map": "/figurinum/static/js/453.a6a97343.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.94fd6d7b.css",
-    "static/js/main.bdc84b79.js"
+    "static/css/main.6afb4d4f.css",
+    "static/js/main.f86d0d33.js"
   ]
 }
