@@ -8,6 +8,10 @@ import { serialize } from "@/lib/serialize";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import type { Product as ProductType } from "@/lib/types";
 
+// See app/shop/page.tsx: keeps stock data fresh and avoids needing a
+// database connection during `next build`.
+export const dynamic = "force-dynamic";
+
 export default async function ProductPage({
   params,
 }: {

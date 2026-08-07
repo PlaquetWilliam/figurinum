@@ -1,0 +1,63 @@
+# Local development environment: hot-reloading Next.js app + MongoDB.
+#
+# Usage:
+#   docker compose up --build          # start app (http://localhost:3000) + mongo
+#   docker compose run --rm seed       # populate demo users/products
+#   docker compose down                # stop (add -v to also wipe mongo data)
+#
+# Values below fall back to sensible dev defaults but will pick up anything
+# already defined in your local .env file (Compose reads it automatically).
+
+services:
+  app:
+    build:
+      context: .
+      target: dev
+    ports:
+      - "3000:3000"
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/figurinum
+      SESSION_SECRET: ${SESSION_SECRET:-dev-secret-change-me}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:-}
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  # One-off helper: `docker compose run --rm seed`
+  seed:
+    build:
+      context: .
+      target: dev
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/figurinum
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      mongo:
+        condition: service_healthy
+    command: ["npm", "run", "db:seed"]
+    profiles: ["tools"]
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  mongo-data:

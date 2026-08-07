@@ -213,6 +213,74 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 
 ---
 
+## Docker
+
+Deux workflows Docker sont disponibles.
+
+### Développement (hot reload)
+
+```bash
+docker compose up --build
+# App sur http://localhost:3000, MongoDB sur localhost:27017
+
+# Dans un autre terminal, une fois les conteneurs démarrés :
+docker compose run --rm seed
+```
+
+Le code source est monté en volume : les changements sont pris en compte à la volée (`next dev`). Les variables `SESSION_SECRET`, `NEXT_PUBLIC_APP_URL`, `STRIPE_*` sont lues depuis ton fichier `.env` local si présent (sinon des valeurs par défaut de dev sont utilisées) ; `MONGODB_URI` pointe automatiquement vers le conteneur `mongo`.
+
+### Vérifier l'image de production en local
+
+```bash
+docker compose -f docker-compose.prod.yml up --build
+```
+
+Construit et lance exactement la même image (`Dockerfile`, cible `runner`, sortie `standalone`) que celle déployée sur Render, avec une base MongoDB jetable. Utile pour valider une image avant de pousser sur `main`.
+
+### Fichiers
+
+| Fichier | Rôle |
+|---------|------|
+| `Dockerfile` | Multi-stage (`deps` → `dev` / `builder` → `runner`). L'étape `runner` est l'image de production minimale utilisée par Render. |
+| `docker-compose.yml` | Environnement de dev complet (app + MongoDB), avec un service `seed` à la demande. |
+| `docker-compose.prod.yml` | Bac à sable pour tester l'image de production en local. |
+| `.dockerignore` | Exclut `node_modules`, `.next`, `.env`, etc. du contexte de build. |
+
+---
+
+## Déploiement continu sur Render
+
+Le dépôt contient un `render.yaml` (Blueprint Render) qui décrit un service web Docker prêt à l'emploi.
+
+### Mise en place (une seule fois)
+
+1. Pousse ce projet sur GitHub (déjà fait si tu lis ce README depuis le repo).
+2. Crée une base MongoDB accessible depuis Internet, par ex. un cluster gratuit [MongoDB Atlas](https://www.mongodb.com/atlas), et récupère son URI de connexion.
+3. Sur [Render](https://dashboard.render.com), clique **New +** → **Blueprint**, puis sélectionne ce dépôt GitHub. Render détecte `render.yaml` automatiquement.
+4. Renseigne les variables marquées comme secrètes lors de la création :
+   - `MONGODB_URI` (obligatoire)
+   - `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` (optionnelles — laisse vide pour garder le paiement démo)
+   - `SESSION_SECRET` est généré automatiquement par Render, rien à faire.
+5. Après le premier déploiement, vérifie l'URL publique donnée par Render (ex. `https://figurinum.onrender.com`). Si elle diffère de la valeur par défaut dans `render.yaml`, mets à jour la variable d'environnement `NEXT_PUBLIC_APP_URL` dans le dashboard Render puis relance un déploiement manuel (**Manual Deploy** → **Deploy latest commit**).
+
+### Ensuite : déploiement automatique
+
+C'est tout — à partir de là, **chaque `git push` sur `main` déclenche automatiquement** :
+
+1. GitHub Actions (`.github/workflows/ci.yml`) lint + build le projet et construit l'image Docker pour vérifier qu'elle est saine.
+2. Render détecte le nouveau commit sur `main`, reconstruit l'image à partir du `Dockerfile` et effectue un déploiement sans coupure (health check sur `/api/health` avant bascule du trafic).
+
+Aucune action manuelle n'est nécessaire pour mettre le site à jour. Pour désactiver temporairement le déploiement auto (ex. le temps de valider la CI avant chaque déploiement), passe `autoDeployTrigger` de `commit` à `checksPass` dans `render.yaml`.
+
+### Notes de configuration
+
+- Le `Dockerfile` construit avec `output: "standalone"` (voir `next.config.ts`) : image finale légère, sans `node_modules` complet.
+- Les variables `NEXT_PUBLIC_*` sont figées dans le bundle JS **au moment du build** (Render les transmet automatiquement comme *build args* Docker). Toute modification nécessite un nouveau déploiement, pas juste un redémarrage.
+- `/api/health` est utilisé à la fois par le `HEALTHCHECK` Docker et par `healthCheckPath` dans `render.yaml`.
+- Les pages qui lisent la base de données (`/`, `/shop`, `/shop/[id]`, `/account`, `/cart`, `/admin/*`, `/checkout/success`) sont rendues dynamiquement (`force-dynamic` ou détection automatique via les cookies de session) : aucune connexion MongoDB n'est requise pendant `next build`, ce qui est indispensable pour que le build Docker/CI fonctionne sans base de données accessible.
+
+---
+
 ## Licence
 
 Projet privé — usage personnel / pédagogique.

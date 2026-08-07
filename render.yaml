@@ -1,0 +1,37 @@
+# Render Blueprint — Infrastructure as Code.
+# https://render.com/docs/blueprint-spec
+#
+# Import this repo once on Render ("New +" > "Blueprint"), fill in the
+# `sync: false` secrets, and every subsequent `git push` to `main` triggers
+# an automatic rebuild + zero-downtime redeploy of the Docker image below.
+
+services:
+  - type: web
+    name: figurinum
+    runtime: docker
+    plan: free
+    region: frankfurt
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    envVars:
+      # Required — set to your MongoDB Atlas (or other) connection string.
+      - key: MONGODB_URI
+        sync: false
+      # Auto-generated once by Render on first deploy, then left untouched.
+      - key: SESSION_SECRET
+        generateValue: true
+      # Public URL of this service. Defaults to the Render subdomain derived
+      # from the service name above — update it if you use a custom domain
+      # or if "figurinum" was already taken.
+      - key: NEXT_PUBLIC_APP_URL
+        value: https://figurinum.onrender.com
+      # Optional — leave unset to keep the built-in demo checkout flow.
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+        sync: false

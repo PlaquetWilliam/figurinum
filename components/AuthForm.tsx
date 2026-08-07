@@ -54,7 +54,7 @@ export function AuthForm({ action, mode, callbackUrl }: AuthFormProps) {
               </div>
               <div>
                 <h3 className="text-white font-semibold mb-1">Livraison Ultra-Sécurisée</h3>
-                <p className="text-green-100/80 text-sm">Vos pépites sont emballées avec le plus grand soin pour garantir un état "Mint" à l'arrivée.</p>
+                <p className="text-green-100/80 text-sm">Vos pépites sont emballées avec le plus grand soin pour garantir un état &laquo;&nbsp;Mint&nbsp;&raquo; à l&apos;arrivée.</p>
               </div>
             </div>
           </div>

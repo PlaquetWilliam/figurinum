@@ -1,0 +1,44 @@
+# Local smoke-test of the exact production image (the one Render builds from
+# the root Dockerfile), wired up to a throwaway MongoDB instance.
+#
+# Usage:
+#   docker compose -f docker-compose.prod.yml up --build
+#   docker compose -f docker-compose.prod.yml run --rm app npm run db:seed
+#
+# This does NOT run on Render — Render builds the Dockerfile directly. This
+# file only exists so you can verify the production build/image locally
+# before pushing.
+
+services:
+  app:
+    build:
+      context: .
+      target: runner
+      args:
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+        NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:-}
+    ports:
+      - "3000:3000"
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/figurinum
+      SESSION_SECRET: ${SESSION_SECRET:-dev-secret-change-me}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  mongo:
+    image: mongo:7
+    volumes:
+      - mongo-data-prod:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  mongo-data-prod:

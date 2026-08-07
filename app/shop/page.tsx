@@ -5,6 +5,12 @@ import { Product } from "@/lib/models";
 import { serialize } from "@/lib/serialize";
 import type { Product as ProductType } from "@/lib/types";
 
+// Always fetch fresh stock/catalog data and avoid requiring a database
+// connection at build time (this page would otherwise be statically
+// prerendered during `next build`, which fails in Docker/CI where no
+// MongoDB instance is reachable).
+export const dynamic = "force-dynamic";
+
 export default async function ShopPage() {
   await connectDB();
   const products = serialize<ProductType[]>(
