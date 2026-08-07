@@ -43,3 +43,6 @@ next-env.d.ts
 # local sqlite leftover
 *.db
 *.db-journal
+
+# Documentations privées
+README.md
