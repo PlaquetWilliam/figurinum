@@ -30,19 +30,18 @@ export default async function ProductPage({
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <Navbar />
       <main className="h-screen flex justify-center items-center mx-auto">
-        <div className="grid md:grid-cols-2 gap-12 items-start">
-          <div className="relative aspect-square rounded-3xl overflow-hidden bg-white border border-slate-100 shadow-sm">
+        <div className="grid md:grid-cols-2 gap-12 items-start w-2/3 h-[600px]">
+          <div className="relative aspect-square w-full h-full rounded-3xl overflow-hidden bg-white border border-slate-100 shadow-sm">
             <Image
               src={product.image}
               alt={product.name}
               fill
               className="object-cover"
               priority
-              sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
 
-          <div>
+          <div className="w-[500px]">
             <span className="text-xs font-bold uppercase tracking-widest text-green-600">
               {product.category}
             </span>
