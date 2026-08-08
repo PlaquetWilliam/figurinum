@@ -1,5 +1,8 @@
 "use server";
 
+import { randomUUID } from "crypto";
+import { mkdir, writeFile } from "fs/promises";
+import path from "path";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { connectDB } from "@/lib/mongodb";
@@ -8,6 +11,36 @@ import { serialize } from "@/lib/serialize";
 import { verifySession, verifyAdmin } from "@/lib/dal";
 import { createCheckoutSession, isStripeConfigured } from "@/lib/stripe";
 import type { CartItem as CartItemType, Order as OrderType, Product as ProductType } from "@/lib/types";
+
+const ALLOWED_IMAGE_TYPES: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/gif": "gif",
+};
+
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 Mo
+
+async function saveProductImage(file: File): Promise<string> {
+  const extension = ALLOWED_IMAGE_TYPES[file.type];
+  if (!extension) {
+    throw new Error("Format d'image non supporté. Utilisez PNG, JPEG, WebP ou GIF.");
+  }
+
+  if (file.size === 0 || file.size > MAX_IMAGE_SIZE) {
+    throw new Error("L'image doit peser entre 1 octet et 5 Mo.");
+  }
+
+  const filename = `${randomUUID()}.${extension}`;
+  const uploadDir = path.join(process.cwd(), "public", "img");
+  await mkdir(uploadDir, { recursive: true });
+  await writeFile(
+    path.join(uploadDir, filename),
+    Buffer.from(await file.arrayBuffer())
+  );
+
+  return `/img/${filename}`;
+}
 
 export async function createOrder() {
   const { userId } = await verifySession();
@@ -91,11 +124,18 @@ export async function createProduct(formData: FormData) {
   await verifyAdmin();
   await connectDB();
 
+  const imageFile = formData.get("image");
+  if (!(imageFile instanceof File) || imageFile.size === 0) {
+    throw new Error("Veuillez sélectionner une image depuis votre ordinateur.");
+  }
+
+  const image = await saveProductImage(imageFile);
+
   await Product.create({
     name: formData.get("name") as string,
     description: formData.get("description") as string,
     price: parseFloat(formData.get("price") as string),
-    image: formData.get("image") as string,
+    image,
     stock: parseInt(formData.get("stock") as string, 10) || 0,
     category: formData.get("category") as string,
     featured: formData.get("featured") === "on",

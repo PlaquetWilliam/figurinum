@@ -62,12 +62,15 @@ export default async function AdminProductsPage() {
             required
             className="px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm"
           />
-          <input
-            name="image"
-            placeholder="URL image (/img/...)"
-            required
-            className="px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm"
-          />
+          <label className="flex flex-col gap-1.5 text-sm text-slate-600">
+            <input
+              name="image"
+              type="file"
+              accept="image/png,image/jpeg,image/webp,image/gif"
+              required
+              className="px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-green-600 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-white hover:file:bg-green-700"
+            />
+          </label>
           <textarea
             name="description"
             placeholder="Description"
