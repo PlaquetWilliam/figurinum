@@ -17,7 +17,11 @@ const ProductSchema = new Schema<ProductDocument>(
     description: { type: String, required: true },
     price: { type: Number, required: true },
     image: { type: String, required: true },
-    stock: { type: Number, default: 10 },
+    // `min: 0` bloque un stock négatif lors des validations Mongoose (create,
+    // save, update avec runValidators). Cette garde complète — sans remplacer —
+    // le décrément conditionnel atomique de lib/stock.ts, qui est la seule
+    // protection réellement efficace en cas de commandes concurrentes.
+    stock: { type: Number, default: 10, min: 0 },
     category: { type: String, required: true },
     featured: { type: Boolean, default: false },
   },

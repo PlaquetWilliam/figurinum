@@ -14,7 +14,7 @@ export default function HomePage() {
       <HyperspaceHero />
       <ShopSection />
       <footer className="border-t border-slate-100 py-12 text-center text-sm text-slate-400">
-        © 2026 Figurinum — Art Toys & Sculptures
+        © 2026 Figurinum - Figurines & Sculptures
       </footer>
     </div>
   );

@@ -16,7 +16,7 @@ const spaceMono = Space_Mono({
 export const metadata: Metadata = {
   title: "Figurinum",
   description:
-    "Boutique de figurines d'art et art toys en éditions limitées. Collection céramique minimaliste.",
+    "Boutique de figurines.",
     icons: {
       icon: "/img/Logo.png", // Le chemin vers ton image dans le dossier public
   },

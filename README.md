@@ -58,7 +58,7 @@ Fichier `.env` (voir `.env.example`) :
 | Variable | Obligatoire | Description |
 |----------|-------------|-------------|
 | `MONGODB_URI` | Oui | URI MongoDB, ex. `mongodb://127.0.0.1:27017/figurinum` |
-| `SESSION_SECRET` | Oui | Secret JWT des cookies de session |
+| `SESSION_SECRET` | Oui | Clé de signature des JWT de session — **32 caractères minimum**, aucune valeur de repli |
 | `NEXT_PUBLIC_APP_URL` | Oui | URL de l’app (`http://localhost:3000` en local) |
 | `STRIPE_SECRET_KEY` | Non | Clé secrète Stripe |
 | `STRIPE_WEBHOOK_SECRET` | Non | Secret du webhook Stripe |
@@ -143,6 +143,7 @@ Bouton logout (icône) à droite de la navbar → retour vers `/auth/login`.
 | `npm run build` | Build de production |
 | `npm start` | Lancer le build de production |
 | `npm run lint` | ESLint |
+| `npm test` | Tests unitaires (Vitest) |
 | `npm run db:seed` | Données de démo (users + produits) |
 
 ---
@@ -160,9 +161,13 @@ figurinum/
 │   ├── account/              # Espace utilisateur
 │   ├── admin/                # Panel admin
 │   ├── actions/              # Server Actions (auth, cart, orders)
-│   └── api/stripe/webhook/   # Webhook Stripe
+│   └── api/
+│       ├── health/           # Liveness check
+│       ├── ready/            # Readiness check (MongoDB)
+│       └── stripe/webhook/   # Webhook Stripe
 ├── components/               # UI (Navbar, Hero, cartes, formulaires…)
-├── lib/                      # MongoDB, modèles Mongoose, session JWT, Stripe, DAL
+├── lib/                      # MongoDB, modèles Mongoose, session JWT, stock, Stripe, DAL
+├── tests/                    # Tests Vitest (lib, actions, api)
 ├── scripts/                  # Seed MongoDB
 ├── public/img/               # Images produits
 └── proxy.ts                  # Protection des routes (auth + admin)
@@ -193,7 +198,8 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 
 ## Rôles et sécurité
 
-- Cookie de session **httpOnly** JWT (7 jours), signé avec `SESSION_SECRET`
+- Cookie de session **httpOnly** contenant un **JWT signé en HS256** (7 jours) avec `SESSION_SECRET` — signé, donc intègre et infalsifiable, mais **non chiffré** : aucune donnée confidentielle n'y est placée (uniquement l'identifiant et le rôle). D'où les noms `signSessionToken()` / `verifySessionToken()` dans `lib/session.ts`.
+- `SESSION_SECRET` est **obligatoire** et doit faire au moins 32 caractères : l'application refuse de démarrer une session sans lui, plutôt que de retomber sur un secret par défaut connu de tous.
 - Routes protégées par `proxy.ts` :
   - non connecté → `/auth/login`
   - non admin sur `/admin/*` → redirection vers `/`
@@ -206,6 +212,7 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 | Problème | Solution |
 |----------|----------|
 | `Missing MONGODB_URI` | Copier `.env.example` vers `.env` et renseigner l’URI |
+| `SESSION_SECRET est obligatoire.` | Renseigner `SESSION_SECRET` dans `.env` (32 caractères minimum) |
 | Connexion MongoDB refusée | Vérifier que MongoDB tourne (local ou Atlas) |
 | Base vide / pas de produits | `npm run db:seed` |
 | Port 3000 déjà utilisé | Arrêter l’autre process ou ouvrir le port indiqué dans le terminal |
@@ -248,6 +255,21 @@ Construit et lance exactement la même image (`Dockerfile`, cible `runner`, sort
 
 ---
 
+## Intégration continue (GitHub Actions)
+
+`.github/workflows/ci.yml` s'exécute à chaque `push` et chaque `pull request` sur `main` :
+
+```
+push / pull request
+  └─ job « lint-and-build » : npm ci → lint → tests (Vitest) → build Next.js
+       └─ job « docker-build » (needs: lint-and-build) : build de l'image de production
+            └─ checks GitHub verts → Render déploie
+```
+
+Le build Docker n'est lancé que si lint, tests et build ont réussi, et l'image n'est pas publiée : elle sert uniquement à prouver que l'image déployable se construit. Aucun secret réel n'est nécessaire (seules des valeurs de remplacement de build sont fournies).
+
+---
+
 ## Déploiement continu sur Render
 
 Le dépôt contient un `render.yaml` (Blueprint Render) qui décrit un service web Docker prêt à l'emploi.
@@ -263,21 +285,68 @@ Le dépôt contient un `render.yaml` (Blueprint Render) qui décrit un service w
    - `SESSION_SECRET` est généré automatiquement par Render, rien à faire.
 5. Après le premier déploiement, vérifie l'URL publique donnée par Render (ex. `https://figurinum.onrender.com`). Si elle diffère de la valeur par défaut dans `render.yaml`, mets à jour la variable d'environnement `NEXT_PUBLIC_APP_URL` dans le dashboard Render puis relance un déploiement manuel (**Manual Deploy** → **Deploy latest commit**).
 
-### Ensuite : déploiement automatique
+### Ensuite : déploiement automatique conditionné à la CI
 
-C'est tout — à partir de là, **chaque `git push` sur `main` déclenche automatiquement** :
+C'est tout — à partir de là, **chaque `git push` sur `main` déclenche** :
 
-1. GitHub Actions (`.github/workflows/ci.yml`) lint + build le projet et construit l'image Docker pour vérifier qu'elle est saine.
-2. Render détecte le nouveau commit sur `main`, reconstruit l'image à partir du `Dockerfile` et effectue un déploiement sans coupure (health check sur `/api/health` avant bascule du trafic).
+1. GitHub Actions (`.github/workflows/ci.yml`) : installation, lint, tests, build Next.js, puis build de l'image Docker de production.
+2. **Uniquement si ces checks passent** (`autoDeployTrigger: checksPass` dans `render.yaml`), Render reconstruit l'image à partir du `Dockerfile` et effectue un déploiement sans coupure — le trafic ne bascule qu'après un readiness check `/api/ready` réussi.
 
-Aucune action manuelle n'est nécessaire pour mettre le site à jour. Pour désactiver temporairement le déploiement auto (ex. le temps de valider la CI avant chaque déploiement), passe `autoDeployTrigger` de `commit` à `checksPass` dans `render.yaml`.
+Un commit dont la CI échoue n'est donc jamais déployé.
 
 ### Notes de configuration
 
 - Le `Dockerfile` construit avec `output: "standalone"` (voir `next.config.ts`) : image finale légère, sans `node_modules` complet.
 - Les variables `NEXT_PUBLIC_*` sont figées dans le bundle JS **au moment du build** (Render les transmet automatiquement comme *build args* Docker). Toute modification nécessite un nouveau déploiement, pas juste un redémarrage.
-- `/api/health` est utilisé à la fois par le `HEALTHCHECK` Docker et par `healthCheckPath` dans `render.yaml`.
+- `HEALTHCHECK` Docker → `/api/health` (liveness) ; `healthCheckPath` Render → `/api/ready` (readiness). Voir la section « Health checks » ci-dessous.
 - Les pages qui lisent la base de données (`/`, `/shop`, `/shop/[id]`, `/account`, `/cart`, `/admin/*`, `/checkout/success`) sont rendues dynamiquement (`force-dynamic` ou détection automatique via les cookies de session) : aucune connexion MongoDB n'est requise pendant `next build`, ce qui est indispensable pour que le build Docker/CI fonctionne sans base de données accessible.
+
+---
+
+## Health checks : liveness et readiness
+
+Deux endpoints distincts, deux questions différentes :
+
+| Endpoint | Question | Vérifie | Réponse |
+|----------|----------|---------|---------|
+| `/api/health` | *Le process est-il vivant ?* (liveness) | Uniquement que Next.js répond, sans toucher à MongoDB | `200 {"status":"ok"}` |
+| `/api/ready` | *Peut-il servir du trafic ?* (readiness) | Connexion MongoDB établie + `ping` effectif | `200 {"status":"ready"}` ou `503 {"status":"not_ready"}` |
+
+- **Docker** utilise `/api/health` : une base momentanément injoignable ne doit pas faire redémarrer en boucle un conteneur qui, lui, fonctionne parfaitement.
+- **Render** utilise `/api/ready` : à l'inverse, une nouvelle version incapable de joindre MongoDB ne doit pas recevoir de trafic ni remplacer la version en ligne.
+
+---
+
+## Robustesse du stock et paiement
+
+Le stock est la ressource critique de la boutique : deux clients ne doivent jamais pouvoir acheter le même dernier exemplaire.
+
+**Décrément conditionnel et atomique** (`lib/stock.ts`) — la vérification du stock fait partie du filtre de la mise à jour, donc MongoDB évalue et décrémente en une seule opération sur le document :
+
+```ts
+Product.findOneAndUpdate(
+  { _id: productId, stock: { $gte: quantity } },
+  { $inc: { stock: -quantity } },
+  { new: true }
+);
+```
+
+Un résultat `null` signifie « stock insuffisant ». Deux commandes concurrentes ne peuvent donc pas réussir toutes les deux : la seconde ne trouve plus de document correspondant. Un `find()` suivi d'un `$inc` séparé laisserait au contraire passer les deux. La contrainte `min: 0` sur le modèle `Product` complète cette garantie côté validation Mongoose, sans la remplacer.
+
+Une commande portant sur plusieurs produits demande plusieurs opérations (MongoDB n'est atomique que par document) : `reserveStockForItems()` applique donc une **compensation** — si une ligne échoue, les lignes déjà réservées sont recréditées, pour ne jamais laisser un état partiellement modifié.
+
+**Quand le stock est-il réservé ?**
+
+| Mode | Moment de la réservation |
+|------|--------------------------|
+| Démo (sans Stripe) | À la création de la commande, le paiement étant réputé immédiat |
+| Stripe | Dans le webhook, **après** confirmation réelle du paiement |
+
+**Paiement Stripe confirmé mais stock devenu indisponible** — le webhook rembourse le `PaymentIntent` puis passe la commande en `CANCELLED` : le client n'est jamais débité pour une commande impossible à honorer. Si Stripe refuse le remboursement, la commande est annulée quand même et le cas se traite depuis le dashboard Stripe.
+
+**Idempotence du webhook** — Stripe peut rejouer un même événement. La première réception « revendique » la commande de façon atomique (`status: "PENDING"` + `stripeSessionId: null` → écriture de l'identifiant de session) ; une réception suivante ne trouve plus de commande à traiter et ressort sans décrémenter le stock une seconde fois.
+
+Ces comportements sont couverts par les tests (`tests/lib/stock.test.ts`, `tests/api/stripe-webhook.test.ts`), y compris des scénarios de demandes concurrentes sur le dernier article.
 
 ---
 

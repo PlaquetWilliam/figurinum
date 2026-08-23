@@ -61,6 +61,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 USER nextjs
 EXPOSE 3000
 
+# Liveness (/api/health) et non readiness (/api/ready) : le rôle de ce check est
+# de détecter un process mort, pas une dépendance externe indisponible. Une base
+# momentanément injoignable ne doit pas faire redémarrer un conteneur sain — la
+# vérification de MongoDB est faite par le health check Render sur /api/ready.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
   CMD node -e "fetch('http://127.0.0.1:'+(process.env.PORT||3000)+'/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
 
