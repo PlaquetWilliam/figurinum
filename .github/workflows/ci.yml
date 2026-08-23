@@ -1,9 +1,16 @@
 name: CI
 
-# Continuous Integration: lint, type-check/build and validate the Docker
-# image on every push/PR. Deployment itself is handled by Render, which
-# watches the `main` branch directly (see render.yaml) and redeploys
-# automatically once a commit lands — no deploy step is needed here.
+# Continuous Integration: lint, unit tests, type-check/build and validate the
+# Docker image on every push/PR.
+#
+#   push / pull request
+#     -> install dependencies -> lint -> tests -> Next.js build   (lint-and-build)
+#     -> Docker production image build                            (docker-build)
+#     -> GitHub checks pass
+#     -> Render deploys (render.yaml: autoDeployTrigger: checksPass)
+#
+# No deploy step is needed here: Render watches `main` itself and only deploys a
+# commit whose checks below are green.
 
 on:
   push:
@@ -30,6 +37,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Unit tests
+        run: npm test
+
       - name: Build
         run: npm run build
         env:
@@ -37,7 +47,9 @@ jobs:
           # verify the app compiles. Pages that need a live database are
           # rendered dynamically at request time, not at build time.
           NEXT_PUBLIC_APP_URL: https://figurinum.onrender.com
-          SESSION_SECRET: ci-build-placeholder-secret
+          # Must satisfy the 32-character minimum enforced by lib/session.ts.
+          # Not a secret: only used so the build can run, never to sign a real session.
+          SESSION_SECRET: ci-build-placeholder-secret-not-used-in-production
 
   docker-build:
     runs-on: ubuntu-latest

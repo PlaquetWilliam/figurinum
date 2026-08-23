@@ -105,7 +105,7 @@ export function HyperspaceHero() {
         <div
           className="mb-6 flex items-center gap-2 px-4 py-1.5 rounded-full bg-green-50 border border-green-100 text-[11px] font-bold text-green-600 tracking-wider uppercase"
         >
-          Éditions Limitées & Art Toys
+          Figurines & Sculptures
         </div>
 
         <h1

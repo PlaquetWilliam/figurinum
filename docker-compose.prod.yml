@@ -21,7 +21,8 @@ services:
       - "3000:3000"
     environment:
       MONGODB_URI: mongodb://mongo:27017/figurinum
-      SESSION_SECRET: ${SESSION_SECRET:-dev-secret-change-me}
+      # Valeur locale uniquement (test de l'image de prod), 32 caractères mini.
+      SESSION_SECRET: ${SESSION_SECRET:-local-image-test-secret-change-me-32}
       NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
       STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
       STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}

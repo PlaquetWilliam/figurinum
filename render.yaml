@@ -2,8 +2,9 @@
 # https://render.com/docs/blueprint-spec
 #
 # Import this repo once on Render ("New +" > "Blueprint"), fill in the
-# `sync: false` secrets, and every subsequent `git push` to `main` triggers
-# an automatic rebuild + zero-downtime redeploy of the Docker image below.
+# `sync: false` secrets, and every subsequent `git push` to `main` triggers a
+# rebuild + zero-downtime redeploy of the Docker image below — but only once
+# the GitHub checks for that commit have passed (see autoDeployTrigger).
 
 services:
   - type: web
@@ -14,8 +15,12 @@ services:
     branch: main
     dockerfilePath: ./Dockerfile
     dockerContext: .
-    healthCheckPath: /api/health
-    autoDeployTrigger: commit
+    # Readiness (et non liveness) : Render ne bascule le trafic vers la nouvelle
+    # version que si elle joint réellement MongoDB.
+    healthCheckPath: /api/ready
+    # Déploiement conditionné à la réussite des checks GitHub du commit
+    # (.github/workflows/ci.yml) : un commit dont la CI échoue n'est pas déployé.
+    autoDeployTrigger: checksPass
     envVars:
       # Required — set to your MongoDB Atlas (or other) connection string.
       - key: MONGODB_URI

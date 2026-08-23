@@ -58,7 +58,7 @@ export default async function AdminDashboard() {
             <p className="text-xs font-bold uppercase tracking-widest text-green-600 mb-2">
               Administration
             </p>
-            <h1 className="text-4xl font-black tracking-tight">Dashboard</h1>
+            <h1 className="text-4xl font-semibold text-slate-900 tracking-tight">Dashboard</h1>
           </div>
           <div className="flex gap-3">
             <Link

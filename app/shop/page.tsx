@@ -27,7 +27,7 @@ export default async function ShopPage() {
           <p className="text-xs font-bold uppercase tracking-widest text-green-600 mb-3">
             Boutique
           </p>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tight">
+          <h1 className="text-4xl md:text-5xl font-semibold text-slate-900 tracking-tight">
             Toute la collection
           </h1>
           <div className="flex flex-wrap gap-2 mt-6">

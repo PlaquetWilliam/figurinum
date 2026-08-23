@@ -10,6 +10,7 @@ import { CartItem, Order, OrderItem, Product } from "@/lib/models";
 import { serialize } from "@/lib/serialize";
 import { verifySession, verifyAdmin } from "@/lib/dal";
 import { createCheckoutSession, isStripeConfigured } from "@/lib/stripe";
+import { releaseReservedStock, reserveStockForItems } from "@/lib/stock";
 import type { CartItem as CartItemType, Order as OrderType, Product as ProductType } from "@/lib/types";
 
 const ALLOWED_IMAGE_TYPES: Record<string, string> = {
@@ -55,6 +56,10 @@ export async function createOrder() {
     return { error: "Votre panier est vide." };
   }
 
+  // Pré-contrôle de confort : il donne un message d'erreur nommant le produit
+  // avant de créer quoi que ce soit. Il ne garantit rien face à la concurrence
+  // (le stock peut changer juste après la lecture) — c'est la réservation
+  // atomique plus bas, puis celle du webhook Stripe, qui font foi.
   for (const item of cartItems) {
     if (item.quantity > item.product.stock) {
       return { error: `${item.product.name} : stock insuffisant.` };
@@ -87,11 +92,22 @@ export async function createOrder() {
     redirect(checkoutUrl);
   }
 
-  // Mode démo sans Stripe
-  for (const item of cartItems) {
-    await Product.findByIdAndUpdate(item.productId, {
-      $inc: { stock: -item.quantity },
-    });
+  // Mode démo sans Stripe : le paiement est réputé immédiat, donc le stock est
+  // réservé ici. Avec Stripe, cette réservation est faite par le webhook une
+  // fois le paiement réellement confirmé.
+  const reservation = await reserveStockForItems(
+    cartItems.map((item) => ({
+      productId: item.productId,
+      quantity: item.quantity,
+    }))
+  );
+
+  if (!reservation.ok) {
+    // Le stock a bougé entre le pré-contrôle et la réservation : la commande
+    // ne peut pas être honorée, on l'annule plutôt que de laisser une
+    // commande PENDING orpheline en base.
+    await Order.findByIdAndUpdate(order.id, { status: "CANCELLED" });
+    return { error: "Stock insuffisant : la commande a été annulée." };
   }
 
   await CartItem.deleteMany({ userId });
@@ -167,11 +183,12 @@ export async function updateOrderStatus(
     order.status === "DELIVERED";
 
   if (status === "CANCELLED" && stockWasTaken) {
-    for (const item of order.items ?? []) {
-      await Product.findByIdAndUpdate(item.productId, {
-        $inc: { stock: item.quantity },
-      });
-    }
+    await releaseReservedStock(
+      (order.items ?? []).map((item) => ({
+        productId: item.productId,
+        quantity: item.quantity,
+      }))
+    );
   }
 
   await Order.findByIdAndUpdate(orderId, { status });

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Types } from "mongoose";
-import { decrypt } from "@/lib/session";
+import { verifySessionToken } from "@/lib/session";
 
 const publicRoutes = ["/auth/login", "/auth/register"];
 const authRoutes = ["/auth/login", "/auth/register"];
@@ -22,7 +22,7 @@ export async function proxy(req: NextRequest) {
   }
 
   const sessionCookie = req.cookies.get("session")?.value;
-  const session = await decrypt(sessionCookie);
+  const session = await verifySessionToken(sessionCookie);
   const hasValidUserId =
     Boolean(session?.userId) && Types.ObjectId.isValid(session!.userId);
   const isLoggedIn = hasValidUserId;

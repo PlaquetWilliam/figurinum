@@ -17,7 +17,9 @@ services:
       - "3000:3000"
     environment:
       MONGODB_URI: mongodb://mongo:27017/figurinum
-      SESSION_SECRET: ${SESSION_SECRET:-dev-secret-change-me}
+      # Valeur de dev uniquement, jamais utilisée en production. Elle doit
+      # respecter le minimum de 32 caractères exigé par lib/session.ts.
+      SESSION_SECRET: ${SESSION_SECRET:-dev-only-session-secret-change-me-32}
       NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
       STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
       STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
