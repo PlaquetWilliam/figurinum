@@ -34,8 +34,8 @@ export default async function CheckoutSuccessPage({
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <Navbar />
-      <main className="pt-32 pb-24 px-6 max-w-lg mx-auto text-center">
-        <div className="bg-white rounded-3xl border border-slate-100 p-10 shadow-sm">
+      <main className="pt-24 sm:pt-32 pb-16 sm:pb-24 px-4 sm:px-6 max-w-lg mx-auto text-center">
+        <div className="bg-white rounded-3xl border border-slate-100 p-6 sm:p-10 shadow-sm">
           <CheckCircle className="mx-auto text-emerald-500 mb-6" size={48} />
           <h1 className="text-3xl font-black mb-3">Commande confirmée !</h1>
           <p className="text-slate-500 mb-8">
@@ -52,7 +52,7 @@ export default async function CheckoutSuccessPage({
                   key={item.id}
                   className="flex justify-between text-sm py-1.5"
                 >
-                  <span className="text-slate-600">
+                  <span className="text-slate-600 min-w-0 truncate pr-3">
                     {item.quantity}× {item.product.name}
                   </span>
                   <span className="font-semibold">

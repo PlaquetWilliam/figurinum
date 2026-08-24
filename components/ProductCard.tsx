@@ -50,7 +50,7 @@ export function ProductCard({
           alt={name}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-700"
-          sizes="(max-width: 768px) 100vw, 33vw"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
         <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/90 backdrop-blur text-[10px] font-bold uppercase tracking-wider text-green-600">
           {category}
@@ -62,7 +62,7 @@ export function ProductCard({
         )}
       </Link>
 
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <div className="flex items-center gap-1 mb-2">
           {[...Array(5)].map((_, i) => (
             <Star key={i} size={12} className="fill-amber-400 text-amber-400" />

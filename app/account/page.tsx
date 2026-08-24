@@ -40,8 +40,8 @@ export default async function AccountPage() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <Navbar />
-      <main className="pt-32 pb-24 px-6 max-w-4xl mx-auto">
-        <div className="bg-white rounded-3xl border border-slate-100 p-8 mb-10">
+      <main className="pt-24 sm:pt-32 pb-16 sm:pb-24 px-4 sm:px-6 max-w-4xl mx-auto">
+        <div className="bg-white rounded-3xl border border-slate-100 p-5 sm:p-8 mb-8 sm:mb-10">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center">
               <UserIcon className="text-green-600" size={24} />
@@ -81,9 +81,9 @@ export default async function AccountPage() {
             {orders.map((order) => (
               <div
                 key={order.id}
-                className="bg-white rounded-2xl border border-slate-100 p-6"
+                className="bg-white rounded-2xl border border-slate-100 p-4 sm:p-6"
               >
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-start sm:items-center justify-between gap-3 mb-4">
                   <div>
                     <p className="text-xs text-slate-400">
                       {new Date(order.createdAt).toLocaleDateString("fr-FR", {

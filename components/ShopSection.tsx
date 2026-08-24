@@ -11,12 +11,12 @@ export async function ShopSection() {
   );
 
   return (
-    <section id="shop" className="py-24 px-6 max-w-7xl mx-auto">
-      <div className="text-center mb-16">
+    <section id="shop" className="py-16 sm:py-24 px-4 sm:px-6 max-w-7xl mx-auto">
+      <div className="text-center mb-10 sm:mb-16">
         <p className="text-xs font-bold uppercase tracking-widest text-green-600 mb-3">
           Collection vedette
         </p>
-        <h2 className="text-4xl md:text-5xl font-semibold text-slate-900 tracking-tight">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-slate-900 tracking-tight">
           Pièces sélectionnées
         </h2>
         <p className="text-slate-500 mt-4 max-w-lg mx-auto">
@@ -25,7 +25,7 @@ export async function ShopSection() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8">
         {products.map((product, i) => (
           <ProductCard key={product.id} {...product} index={i} />
         ))}

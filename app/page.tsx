@@ -13,7 +13,7 @@ export default function HomePage() {
       <Navbar />
       <HyperspaceHero />
       <ShopSection />
-      <footer className="border-t border-slate-100 py-12 text-center text-sm text-slate-400">
+      <footer className="border-t border-slate-100 py-10 sm:py-12 px-4 text-center text-sm text-slate-400">
         © 2026 Figurinum - Figurines & Sculptures
       </footer>
     </div>

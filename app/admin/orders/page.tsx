@@ -39,7 +39,7 @@ export default async function AdminOrdersPage() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <Navbar />
-      <main className="pt-32 pb-24 px-6 max-w-6xl mx-auto">
+      <main className="pt-24 sm:pt-32 pb-16 sm:pb-24 px-4 sm:px-6 max-w-6xl mx-auto">
         <Link href="/admin" className="text-sm text-green-600 font-semibold hover:underline">
           ← Dashboard
         </Link>
@@ -65,7 +65,7 @@ export default async function AdminOrdersPage() {
                     })}
                   </p>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                   <p className="text-xl font-black">{order.total.toFixed(2)} €</p>
                   <OrderStatusSelect orderId={order.id} currentStatus={order.status} />
                 </div>

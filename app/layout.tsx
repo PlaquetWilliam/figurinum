@@ -32,7 +32,7 @@ export default function RootLayout({
       lang="fr"
       className={`${outfit.variable} ${spaceMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans">
+      <body className="min-h-full flex flex-col font-sans overflow-x-hidden">
         {children}
       </body>
     </html>

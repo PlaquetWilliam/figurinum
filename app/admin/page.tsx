@@ -52,47 +52,47 @@ export default async function AdminDashboard() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <Navbar />
-      <main className="pt-32 pb-24 px-6 max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-10">
+      <main className="pt-24 sm:pt-32 pb-16 sm:pb-24 px-4 sm:px-6 max-w-6xl mx-auto">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-10">
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-green-600 mb-2">
               Administration
             </p>
-            <h1 className="text-4xl font-semibold text-slate-900 tracking-tight">Dashboard</h1>
+            <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900 tracking-tight">Dashboard</h1>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <Link
               href="/admin/products"
-              className="px-5 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-slate-800 transition-colors"
+              className="px-5 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-slate-800 transition-colors text-center"
             >
               Gérer les produits
             </Link>
             <Link
               href="/admin/orders"
-              className="px-5 py-2.5 border border-slate-200 text-sm font-bold rounded-xl hover:bg-white transition-colors"
+              className="px-5 py-2.5 border border-slate-200 text-sm font-bold rounded-xl hover:bg-white transition-colors text-center"
             >
               Commandes
             </Link>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-12">
           {stats.map((stat) => (
             <Link
               key={stat.label}
               href={stat.href}
-              className="bg-white rounded-2xl border border-slate-100 p-6 hover:shadow-lg hover:shadow-green-500/5 transition-all"
+              className="bg-white rounded-2xl border border-slate-100 p-4 sm:p-6 hover:shadow-lg hover:shadow-green-500/5 transition-all"
             >
               <stat.icon className="text-green-600 mb-3" size={22} />
-              <p className="text-2xl font-black">{stat.value}</p>
+              <p className="text-xl sm:text-2xl font-black">{stat.value}</p>
               <p className="text-sm text-slate-500">{stat.label}</p>
             </Link>
           ))}
         </div>
 
         <h2 className="text-lg font-black mb-4">Commandes récentes</h2>
-        <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="bg-white rounded-2xl border border-slate-100 overflow-x-auto">
+          <table className="w-full text-sm min-w-[520px]">
             <thead>
               <tr className="border-b border-slate-100 text-left text-xs uppercase tracking-wider text-slate-400">
                 <th className="p-4">Client</th>

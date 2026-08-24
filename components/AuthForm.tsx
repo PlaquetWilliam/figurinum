@@ -18,56 +18,19 @@ export function AuthForm({ action, mode, callbackUrl }: AuthFormProps) {
   const isLogin = mode === "login";
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      <Image className="absolute top-0 left-0 w-12 m-4" src={Logo} alt="Logo de mon site" />
-      
-      {/* --- PARTIE DROITE (Nouvelle version) --- */}
-      <div className="absolute top-0 right-0 w-3/5 h-screen bg-gradient-to-br from-green-600 to-green-900 flex flex-col justify-center items-center p-12">
-        {/* Motif de fond discret (points) */}
-        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
-        
-        <div className="relative z-10 max-w-lg w-full flex flex-col gap-8">
-          <div className="text-center">
-            <h2 className="text-4xl font-bold text-white mb-4 leading-tight">
-              Donnez vie à votre passion de la collection.
-            </h2>
-            <p className="text-green-100 text-lg">
-              Découvrez des figurines exclusives, des éditions limitées et rejoignez la plus grande communauté de passionnés.
-            </p>
-          </div>
+    <div className="min-h-screen flex flex-col lg:flex-row relative overflow-x-hidden">
+      <Image
+        className="absolute top-0 left-0 z-20 w-10 sm:w-12 m-4"
+        src={Logo}
+        alt="Logo de mon site"
+      />
 
-          {/* Cartes de réassurance façon Glassmorphism */}
-          <div className="grid grid-cols-1 gap-4 mt-8">
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 p-5 rounded-2xl text-left flex items-start gap-4 transition-transform hover:-translate-y-1">
-              <div className="p-3 bg-green-500/30 rounded-xl">
-                <ShieldCheck className="text-green-300" size={24} />
-              </div>
-              <div>
-                <h3 className="text-white font-semibold mb-1">100% Authentique</h3>
-                <p className="text-green-100/80 text-sm">Toutes nos figurines sont certifiées officielles et proviennent directement des fabricants.</p>
-              </div>
-            </div>
-
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 p-5 rounded-2xl text-left flex items-start gap-4 transition-transform hover:-translate-y-1">
-              <div className="p-3 bg-green-500/30 rounded-xl">
-                <Package className="text-green-300" size={24} />
-              </div>
-              <div>
-                <h3 className="text-white font-semibold mb-1">Livraison Ultra-Sécurisée</h3>
-                <p className="text-green-100/80 text-sm">Vos pépites sont emballées avec le plus grand soin pour garantir un état &laquo;&nbsp;Mint&nbsp;&raquo; à l&apos;arrivée.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* --- PARTIE GAUCHE (Formulaire) --- */}
-      <div className="absolute top-0 left-0 h-screen flex flex-col justify-center items-center w-2/5">
-        <div className="text-center mb-8">
+      <div className="relative flex flex-1 flex-col justify-center items-center w-full lg:w-2/5 min-h-screen px-4 sm:px-8 py-20 lg:py-12">
+        <div className="text-center mb-8 w-full max-w-md">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-green-50 border border-green-100 text-[11px] font-semibold text-green-600 tracking-wider uppercase mb-6">
             Figurinum
           </div>
-          <h1 className="text-4xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
             {isLogin ? "Connexion" : "Créer un compte"}
           </h1>
           <p className="text-slate-500 mt-2 text-sm">
@@ -79,7 +42,7 @@ export function AuthForm({ action, mode, callbackUrl }: AuthFormProps) {
 
         <form
           action={formAction}
-          className="w-4/5 space-y-5"
+          className="w-full max-w-md space-y-5"
         >
           {callbackUrl && (
             <input type="hidden" name="callbackUrl" value={callbackUrl} />
@@ -173,6 +136,50 @@ export function AuthForm({ action, mode, callbackUrl }: AuthFormProps) {
             </>
           )}
         </p>
+      </div>
+
+      <div className="relative w-full lg:w-3/5 min-h-[420px] lg:min-h-screen bg-gradient-to-br from-green-600 to-green-900 flex flex-col justify-center items-center p-8 sm:p-12">
+        <div
+          className="absolute inset-0 opacity-20"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 2px 2px, white 1px, transparent 0)",
+            backgroundSize: "24px 24px",
+          }}
+        />
+
+        <div className="relative z-10 max-w-lg w-full flex flex-col gap-8">
+          <div className="text-center">
+            <h2 className="text-2xl sm:text-4xl font-bold text-white mb-4 leading-tight">
+              Donnez vie à votre passion de la collection.
+            </h2>
+            <p className="text-green-100 text-base sm:text-lg">
+              Découvrez des figurines exclusives, des éditions limitées et rejoignez la plus grande communauté de passionnés.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 mt-2 lg:mt-8">
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 p-5 rounded-2xl text-left flex items-start gap-4 transition-transform hover:-translate-y-1">
+              <div className="p-3 bg-green-500/30 rounded-xl shrink-0">
+                <ShieldCheck className="text-green-300" size={24} />
+              </div>
+              <div>
+                <h3 className="text-white font-semibold mb-1">100% Authentique</h3>
+                <p className="text-green-100/80 text-sm">Toutes nos figurines sont certifiées officielles et proviennent directement des fabricants.</p>
+              </div>
+            </div>
+
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 p-5 rounded-2xl text-left flex items-start gap-4 transition-transform hover:-translate-y-1">
+              <div className="p-3 bg-green-500/30 rounded-xl shrink-0">
+                <Package className="text-green-300" size={24} />
+              </div>
+              <div>
+                <h3 className="text-white font-semibold mb-1">Livraison Ultra-Sécurisée</h3>
+                <p className="text-green-100/80 text-sm">Vos pépites sont emballées avec le plus grand soin pour garantir un état &laquo;&nbsp;Mint&nbsp;&raquo; à l&apos;arrivée.</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -18,13 +18,13 @@ export default async function AdminProductsPage() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <Navbar />
-      <main className="pt-32 pb-24 px-6 max-w-6xl mx-auto">
+      <main className="pt-24 sm:pt-32 pb-16 sm:pb-24 px-4 sm:px-6 max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-10">
           <div>
             <Link href="/admin" className="text-sm text-green-600 font-semibold hover:underline">
               ← Dashboard
             </Link>
-            <h1 className="text-3xl font-black mt-2">Produits</h1>
+            <h1 className="text-2xl sm:text-3xl font-black mt-2">Produits</h1>
           </div>
         </div>
 
@@ -89,8 +89,8 @@ export default async function AdminProductsPage() {
           </button>
         </form>
 
-        <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="bg-white rounded-2xl border border-slate-100 overflow-x-auto">
+          <table className="w-full text-sm min-w-[480px]">
             <thead>
               <tr className="border-b border-slate-100 text-left text-xs uppercase tracking-wider text-slate-400">
                 <th className="p-4">Produit</th>

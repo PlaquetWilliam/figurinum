@@ -22,12 +22,12 @@ export default async function ShopPage() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <Navbar />
-      <main className="pt-32 pb-24 px-6 max-w-7xl mx-auto">
-        <div className="mb-12">
+      <main className="pt-24 sm:pt-32 pb-16 sm:pb-24 px-4 sm:px-6 max-w-7xl mx-auto">
+        <div className="mb-8 sm:mb-12">
           <p className="text-xs font-bold uppercase tracking-widest text-green-600 mb-3">
             Boutique
           </p>
-          <h1 className="text-4xl md:text-5xl font-semibold text-slate-900 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-slate-900 tracking-tight">
             Toute la collection
           </h1>
           <div className="flex flex-wrap gap-2 mt-6">
@@ -42,7 +42,7 @@ export default async function ShopPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8">
           {products.map((product, i) => (
             <ProductCard key={product.id} {...product} index={i} />
           ))}

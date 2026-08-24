@@ -93,7 +93,7 @@ export function HyperspaceHero() {
   return (
     <div
       ref={containerRef}
-      className="relative isolate w-full h-[90vh] md:h-screen bg-slate-50 flex flex-col items-center justify-center overflow-hidden border-b border-slate-100"
+      className="relative isolate w-full min-h-[85svh] md:h-screen bg-slate-50 flex flex-col items-center justify-center overflow-hidden border-b border-slate-100 pt-20 md:pt-0"
     >
       <canvas
         ref={canvasRef}
@@ -101,7 +101,7 @@ export function HyperspaceHero() {
       />
       <div className="absolute inset-0 bg-gradient-to-t from-slate-50 via-transparent to-transparent -z-10 pointer-events-none" />
 
-      <div className="relative z-10 text-center px-6 max-w-4xl flex flex-col items-center select-none pointer-events-auto">
+      <div className="relative z-10 text-center px-4 sm:px-6 max-w-4xl flex flex-col items-center select-none pointer-events-auto">
         <div
           className="mb-6 flex items-center gap-2 px-4 py-1.5 rounded-full bg-green-50 border border-green-100 text-[11px] font-bold text-green-600 tracking-wider uppercase"
         >
@@ -109,7 +109,7 @@ export function HyperspaceHero() {
         </div>
 
         <h1
-          className="text-6xl sm:text-8xl md:text-9xl font-black tracking-tight leading-none mb-8 text-slate-900"
+          className="text-[2.75rem] sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tight leading-none mb-6 sm:mb-8 text-slate-900"
         >
           FIGURI
           <span className="text-transparent bg-clip-text bg-gradient-to-br from-green-600 to-green-900">
@@ -118,7 +118,7 @@ export function HyperspaceHero() {
         </h1>
 
         <p
-          className="text-base sm:text-lg text-slate-600 max-w-xl mb-10 leading-relaxed font-normal"
+          className="text-sm sm:text-lg text-slate-600 max-w-xl mb-8 sm:mb-10 leading-relaxed font-normal"
         >
           Plongez dans la pureté des formes. Découvrez des pièces d&apos;art
           contemporain et des sculptures d&apos;avant-garde au design céramique
@@ -127,7 +127,7 @@ export function HyperspaceHero() {
 
         <a
           href="#shop"
-          className="px-8 py-3.5 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-md text-white font-semibold tracking-wider transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] rounded-lg"
+          className="w-full sm:w-auto px-8 py-3.5 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-sm sm:text-base text-white font-semibold tracking-wider transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] rounded-lg"
         >
           Découvrir la Collection
         </a>
